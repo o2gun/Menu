@@ -108,6 +108,7 @@ const menu = [
         For fans of Old-school MMOs</br>`,
     },
 ];
+
 const section = document.querySelector(".section-center");
 const btnContainer = document.querySelector(".btn-container");
 
@@ -115,62 +116,40 @@ const btnContainer = document.querySelector(".btn-container");
 // const mapped = menu.map((item) => item.category);
 // const uniqueCategory = [...new Set(mapped)];
 // But we can write this as a one line---
-
-const uniqueCategory = [...new Set(menu.map((item) => item.category))];
-uniqueCategory.unshift("All")
-console.log(uniqueCategory)
+const uniqueCategory = [...new Set(menu.map(item => item.category))];
+uniqueCategory.unshift("All");
 
 const categoryList = () => {
-    const categoryBtns = uniqueCategory
-        .map((category) => {
-            return `<button class="btn btn-outline-dark btn-item" data-id=${category}>
-            ${category}</button>`;
-        })
-        .join("");
+    const categoryBtns = uniqueCategory.map(category =>
+        `<button class="btn btn-outline-dark btn-item" data-id=${category}>${category}</button>`
+    ).join("");
 
     btnContainer.innerHTML = categoryBtns;
-    const filterBtns = $(".btn-item");
-
-    filterBtns.click(function (e) {
-        // console.log(this)
-        if ($(this).hasClass("btn-outline-dark")) {
-
-            $(this).toggleClass("btn-dark").toggleClass("btn-outline-dark")
-                .siblings().removeClass("btn-dark").addClass("btn-outline-dark")
-        }
+    $(".btn-item").click(function (e) {
+        $(this).toggleClass("btn-dark").toggleClass("btn-outline-dark")
+            .siblings().removeClass("btn-dark").addClass("btn-outline-dark");
 
         const category = e.target.textContent.trim();
-        const menuCategory = menu.filter((menuItem) => {
-            if (menuItem.category === category) {
-                return menuItem;
-            }
-        });
-        if (category === "All") {
-            menuList(menu);
-        } else {
-            menuList(menuCategory);
-        }
-    })
-}
+        const menuCategory = category === "All" ? menu : menu.filter(item => item.category === category);
+        menuList(menuCategory);
+    });
+};
 
-// Let's print everything to the front side
-const menuList = (menuItem) => {
-    let displayMenu = menuItem.map((item) => {
-        return `<div class="menu-items col-lg-6 col-sm-12">
-                <img src=${item.img} alt=${item.title} class="photo" />
+// // Let's print everything to the front side
+const menuList = menuItem => {
+    section.innerHTML = menuItem.map(item =>
+        `<div class="menu-items col-lg-6 col-sm-12">
+            <img src=${item.img} alt=${item.title} class="photo" />
                 <div class="menu-info">
                     <div>
                         <h4 class="menu-title">${item.title}</h4>
                         <h4 class="price">${item.price}</h4>
                     </div>
-                    <div class="menu-text">${item.desc}</div>
-                </div>
+                <div class="menu-text">${item.desc}</div>
             </div>
-        `;
-    });
-    displayMenu = displayMenu.join("");
-    section.innerHTML = displayMenu;
-
+        </div>`
+    ).join("");
 };
-menuList(menu)
+
+menuList(menu);
 categoryList();
